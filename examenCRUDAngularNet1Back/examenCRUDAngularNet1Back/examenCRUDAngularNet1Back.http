@@ -1,0 +1,6 @@
+@examenCRUDAngularNet1Back_HostAddress = http://localhost:5089
+
+GET {{examenCRUDAngularNet1Back_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
