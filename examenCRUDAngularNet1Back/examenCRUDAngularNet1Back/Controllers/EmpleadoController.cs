@@ -33,6 +33,7 @@ namespace examenCRUDAngularNet1Back.Controllers
                     _listaEmpleadosBD = await _context.Empleados.AsNoTracking()
                         .Include(d => d.IdDepartamentoNavigation)
                         .OrderByDescending(a => a.Activo)
+                        .ThenBy(a => a.IdEmpleado)
                         .ToListAsync();
                 }
                 else
@@ -113,7 +114,21 @@ namespace examenCRUDAngularNet1Back.Controllers
                 };
                 await _context.Empleados.AddAsync(_empleadoBD);
                 await _context.SaveChangesAsync();
-                return Ok(_empleadoBD);
+                // Buscamos el empleado recién creado pero incluyendo su departamento para que el Front lo vea bien
+                var empleadoRecienGuardado = await _context.Empleados
+                    .Include(d => d.IdDepartamentoNavigation)
+                    .FirstOrDefaultAsync(e => e.IdEmpleado == _empleadoBD.IdEmpleado);
+
+                var dtoRespuesta = new EmpleadoDTO
+                {
+                    IdEmpleado = empleadoRecienGuardado!.IdEmpleado,
+                    NombreEmpleado = empleadoRecienGuardado.NombreEmpleado,
+                    IdDepartamento = empleadoRecienGuardado.IdDepartamento,
+                    NombreDepartamento = empleadoRecienGuardado.IdDepartamentoNavigation?.NombreDepartamento ?? "Sin Depto",
+                    Activo = empleadoRecienGuardado.Activo
+                };
+
+                return Ok(dtoRespuesta);
 
             }
             catch (Exception ex)

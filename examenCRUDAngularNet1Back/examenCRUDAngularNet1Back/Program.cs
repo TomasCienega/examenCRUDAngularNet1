@@ -17,7 +17,7 @@ var keyBytes = Encoding.ASCII.GetBytes(secretKey!);
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     // Esto es lo que permite que el JSON conserve las Mayúsculas (PascalCase)
-    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    //options.JsonSerializerOptions.PropertyNamingPolicy = null;
 
     // Y esto evita el error de lentitud por los ciclos infinitos
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
