@@ -7,7 +7,8 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Obtener la clave desde appsettings.json
-var secretKey = builder.Configuration.GetValue<string>("Jwt:Key");
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var secretKey = jwtSettings.GetValue<string>("Key");
 var keyBytes = Encoding.ASCII.GetBytes(secretKey!);
 
 // Add services to the container.
@@ -15,7 +16,34 @@ var keyBytes = Encoding.ASCII.GetBytes(secretKey!);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Configuración de Swagger para mostrar el candado
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Escribe: 'Bearer [tu_token]'"
+    });
+
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 builder.Services.AddDbContext<AngularNetCrudContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL"))
 );
@@ -25,7 +53,7 @@ builder.Services.AddCors(options=>
     options.AddPolicy("PoliticaAngular", app =>
     {
         //withorigin
-        app.AllowAnyOrigin()
+        app.WithOrigins("http://localhost:4200")
         .AllowAnyHeader()
         .AllowAnyMethod();
     });
@@ -41,8 +69,9 @@ builder.Services.AddAuthentication(config => {
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-        ValidateIssuer = false, // Puedes ponerlo en true si quieres validar el Issuer
-        ValidateAudience = false
+        ValidateIssuer = false, // Ponlo en false para pruebas locales
+        ValidateAudience = false, // Ponlo en false para pruebas locales
+        ClockSkew = TimeSpan.Zero // Esto elimina el retraso de 5 min por defecto
     };
 });
 var app = builder.Build();

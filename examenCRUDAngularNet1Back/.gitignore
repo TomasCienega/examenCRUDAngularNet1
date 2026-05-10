@@ -1,0 +1,15 @@
+## Carpetas de compilación (Basura)
+bin/
+obj/
+
+## Configuraciones personales de VS
+.vs/
+*.user
+*.suo
+
+## Archivos de publicación
+publish/
+
+## Si usas secretos o variables de entorno (Opcional pero recomendado)
+.env
+appsettings.Development.json
