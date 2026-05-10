@@ -56,3 +56,18 @@ begin
 	set activo = case when activo = 1 then 0 else 1 end
 	where idEmpleado = @idEmpleado
 end
+
+create table Usuario
+(
+	idUsuario int identity(1,1) not null,
+	nombre varchar(50),
+	correo varchar(100) not null,
+	clave varchar(100) not null, -- En un proyecto real esto iría encriptado
+	constraint PK_Usuario primary key (idUsuario)
+)
+
+insert into Usuario(nombre, correo, clave) 
+values ('Administrador', 'admin@correo.com', '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'),('Usuario', 'usuario@correo.com', '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5')
+
+
+select * from Usuario

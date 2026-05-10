@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("examenCRUDAngularNet1Back")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1b02850b412085195fd9bd11de2e7b9b302fc226")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68dcfb68b437f75566f14fc60d27c852336a83ad")]
 [assembly: System.Reflection.AssemblyProductAttribute("examenCRUDAngularNet1Back")]
 [assembly: System.Reflection.AssemblyTitleAttribute("examenCRUDAngularNet1Back")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
