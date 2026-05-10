@@ -13,7 +13,15 @@ var keyBytes = Encoding.ASCII.GetBytes(secretKey!);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+// En Program.cs
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    // Esto es lo que permite que el JSON conserve las Mayúsculas (PascalCase)
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+
+    // Y esto evita el error de lentitud por los ciclos infinitos
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 // Configuración de Swagger para mostrar el candado

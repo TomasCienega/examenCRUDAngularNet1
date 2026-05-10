@@ -30,7 +30,7 @@ namespace examenCRUDAngularNet1Back.Controllers
                 List<Empleado> _listaEmpleadosBD;
                 if (idDep == 0)
                 {
-                    _listaEmpleadosBD = await _context.Empleados
+                    _listaEmpleadosBD = await _context.Empleados.AsNoTracking()
                         .Include(d => d.IdDepartamentoNavigation)
                         .OrderByDescending(a => a.Activo)
                         .ToListAsync();
@@ -38,6 +38,15 @@ namespace examenCRUDAngularNet1Back.Controllers
                 else
                 {
                     _listaEmpleadosBD = await _context.Empleados.FromSqlRaw("EXEC sp_ListarEmpleadosPorIdDepartamento {0}", idDep).ToListAsync();
+                    // --- OPTIMIZACIÓN DE CARGA EXPLÍCITA ---
+                    // 1. Extraemos los IDs de departamento únicos de la lista de empleados
+                    var idsDeptos = _listaEmpleadosBD.Select(e => e.IdDepartamento).Distinct().ToList();
+
+                    // 2. Buscamos esos departamentos y los cargamos en memoria en una sola consulta
+                    // EF vincula automáticamente estos objetos a los empleados (Fix-up)
+                    await _context.Departamentos
+                        .Where(d => idsDeptos.Contains(d.IdDepartamento))
+                        .LoadAsync();
                 }
                     //await _context.Entry(emp).Reference(d=> d.IdDepartamentoNavigation).LoadAsync();
 
@@ -46,7 +55,7 @@ namespace examenCRUDAngularNet1Back.Controllers
                     IdEmpleado = emp.IdEmpleado,
                     NombreEmpleado = emp.NombreEmpleado,
                     IdDepartamento = emp.IdDepartamento,
-                    NombreDepartamento = emp.IdDepartamentoNavigation?.NombreDepartamento ?? string.Empty,
+                    NombreDepartamento = emp.IdDepartamentoNavigation?.NombreDepartamento ?? "Sin Depto",
                     Activo = emp.Activo,
                 }).ToList();
                 return Ok(_listaEmpleadosDTO);
@@ -100,6 +109,7 @@ namespace examenCRUDAngularNet1Back.Controllers
                 {
                     NombreEmpleado = empdto.NombreEmpleado,
                     IdDepartamento = empdto.IdDepartamento,
+                    Activo = true
                 };
                 await _context.Empleados.AddAsync(_empleadoBD);
                 await _context.SaveChangesAsync();
