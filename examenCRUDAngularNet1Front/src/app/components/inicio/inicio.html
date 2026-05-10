@@ -1,0 +1,104 @@
+<div class="container mt-4">
+  <div class="m-2 border p-3 rounded bg-light shadow-sm">
+    <h2 class="fw-bold">Ingresar Empleado</h2>
+    <form>
+      <div class="mb-3">
+        <label class="d-block fw-bold">Nombre Empleado: </label>
+        <input
+          type="text"
+          [(ngModel)]="requestNombre"
+          name="requestNombre"
+          class="form-control w-auto d-inline-block"
+          required
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="d-block fw-bold">Departamento: </label>
+        <select
+          [(ngModel)]="requestIdDepartamento"
+          name="requestIdDepartamento"
+          class="form-select w-auto d-inline-block"
+          required
+        >
+          <option value="0">--Selecciona un departamento--</option>
+          <option *ngFor="let dep of listaDepartamentos" [value]="dep.idDepartamento">
+            {{ dep.nombreDepartamento }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <button type="button" (click)="guardarEmpleado()" class="btn btn-outline-secondary">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <hr />
+
+  <div class="m-2">
+    <h2 class="h4">Filtro Deparamento (Filtro)</h2>
+    <select
+      class="form-select d-inline-block w-auto"
+      [(ngModel)]="idDepartamentoFiltro"
+      name="filtroDepto"
+      (change)="filtrar($event)"
+    >
+      <option value="0">--Ver todo--</option>
+      <option *ngFor="let dep of listaDepartamentos" [value]="dep.idDepartamento">
+        {{ dep.nombreDepartamento }}
+      </option>
+    </select>
+    <button class="btn btn-outline-info ms-2" (click)="limpiarFiltro()">Limpiar</button>
+  </div>
+
+  <div class="m-2 table-responsive">
+    <table class="table table-striped align-middle mt-3">
+      <thead>
+        <tr>
+          <th>Id Empleado</th>
+          <th>Nombre Empleado</th>
+          <th>Departamento</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="listaEmpleados.length === 0">
+          <td colspan="4" class="text-center">
+            <strong>El usuario con las especificaciones no existe</strong>
+          </td>
+        </tr>
+
+        <tr *ngFor="let emp of listaEmpleados">
+          <td>{{ emp.idEmpleado }}</td>
+          <td>{{ emp.nombreEmpleado }}</td>
+          <td>{{ emp.nombreDepartamento }}</td>
+          <td>
+            <div class="d-flex gap-2 justify-content-center">
+              <button
+                (click)="cambiarEstado(emp)"
+                [class]="emp.activo ? 'btn btn-outline-warning' : 'btn btn-outline-success'"
+              >
+                {{ emp.activo ? 'Desactivar' : 'Activar' }}
+              </button>
+
+              <button class="btn btn-outline-primary" (click)="editarEmpleado(emp)">Editar</button>
+
+              <button class="btn btn-outline-danger" (click)="eliminarEmpleado(emp)">
+                Eliminar
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-modal-editar
+    [empleadoParaEditar]="empleadoParaEditar"
+    [listaDepartamentos]="listaDepartamentos"
+    (onGuardar)="confirmarEdicion()"
+  >
+  </app-modal-editar>
+</div>

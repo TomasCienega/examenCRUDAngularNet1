@@ -1,0 +1,11 @@
+/* Para que la tabla no se vea apretada en móviles */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Un pequeño ajuste para los botones de acción */
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.85rem;
+}
