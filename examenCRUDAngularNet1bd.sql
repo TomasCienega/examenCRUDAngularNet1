@@ -32,7 +32,7 @@ values
 select * from Empleado
 select * from Departamento
 
-create procedure sp_ListarEmpleadosPorIdDepartamento
+alter procedure sp_ListarEmpleadosPorIdDepartamento
 (
 	@idDepartamento int
 )
@@ -43,7 +43,7 @@ begin
 	inner join Departamento d
 	on e.idDepartamento = d.idDepartamento
 	where d.idDepartamento = @idDepartamento
-	order by activo desc
+	order by activo desc,IdEmpleado ASC;
 end
 
 create procedure sp_EstadoEmpleado
